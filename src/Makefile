@@ -1,6 +1,8 @@
 CXX = g++
-CXXFLAGS = -std=c++17 -Wall
+CXXFLAGS = -std=c++17 -Wall -I$(INCLUDEPATH)
 Llib = ../dep/lib/
+INCLUDEPATH = ../dep/header/
+
 
 all: FITS_MANIP
 
