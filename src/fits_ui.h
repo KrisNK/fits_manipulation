@@ -4,6 +4,10 @@
 #include "fitsio.h"
 #include <string>
 
+// MAJOR BUG
+// When printing data, the majority is 0.
+// This is wrong, I must fix it.
+
 struct header_card
 {
     char keyname[FLEN_KEYWORD];
@@ -31,6 +35,8 @@ private:
 
     int getDatatype(int* datatype);
 
+    int cfits_error();
+
     int extractData(fitsfile* source);
     int extractParam(fitsfile* source);
 
@@ -46,6 +52,8 @@ public:
     int outputFitsImage(std::string* targetPath);
     int outputFitsFrames(std::string* targetPath);
     int outputFitsCube(std::string* targetPath);
+
+    int printData();
 };
 
 #endif // FITS_UI_H

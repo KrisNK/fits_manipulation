@@ -35,6 +35,22 @@ int fits_ui::getDatatype(int *datatype)
     case (FLOAT_IMG):
         *datatype = TFLOAT;
         break;
+    case (USHORT_IMG):
+        *datatype = TUSHORT;
+        break;
+    default:
+        *datatype = TBYTE;
+        break;
+    }
+    return 0;
+}
+
+int fits_ui::cfits_error()
+{
+    if (status)
+    {
+        fits_report_error(stdout, status);
+        status = 0;
     }
     return 0;
 }
@@ -43,6 +59,7 @@ int fits_ui::getDatatype(int *datatype)
 
 int fits_ui::manageParamArray()
 {
+    // numImg MUST BE INCREMENTED BEFORE USING THIS FUNCTION
     img_param* buffparam = new img_param [numImg-1];
 
     for (int i{0}; i < numImg-1; ++i)
@@ -60,6 +77,7 @@ int fits_ui::manageParamArray()
 
 int fits_ui::manageDataArray()
 {
+    // manageParamArray MUST BE USED BEFORE USING THIS FUNCTION
     long** buffdata = new long* [numImg-1];
     for (int i{0}; i < numImg-1; ++i)
         buffdata[i] = new long [param[i].imgSize];
@@ -95,12 +113,18 @@ int fits_ui::manageDataArray()
 int fits_ui::extractParam(fitsfile *source)
 {
     fits_get_img_equivtype(source, &param[numImg-1].bitpix, &status);
+    cfits_error();
+
     fits_get_img_dim(source, &param[numImg-1].naxis, &status);
+    cfits_error();
+
     param[numImg-1].naxes = new long [param[numImg-1].naxis];
     param[numImg-1].fpixel = new long [param[numImg-1].naxis];
     for (int i{0}; i < param[numImg-1].naxis; ++i)
         param[numImg-1].fpixel[i] = 1;
+
     fits_get_img_size(source, param[numImg-1].naxis, param[numImg-1].naxes, &status);
+    cfits_error();
 
     for (int i{0}; i < param[numImg-1].naxis; ++i)
     {
@@ -118,6 +142,7 @@ int fits_ui::extractData(fitsfile *source)
     getDatatype(&datatype);
     data[numImg-1] = new long [param[numImg-1].imgSize];
     fits_read_pix(source, datatype, param[numImg-1].fpixel, param[numImg-1].imgSize, nullptr, data[numImg-1], nullptr, &status);
+    cfits_error();
     return 0;
 }
 
@@ -130,11 +155,13 @@ int fits_ui::extractAll(fitsfile* source)
 {
     int numHDU{0};
     fits_get_num_hdus(source, &numHDU, &status);
-
+    cfits_error();
+    std::cout << "File contains " << numHDU << " HDU(s)" << std::endl;
     for (int i{0}; i < numHDU; ++i)
     {
 
         fits_movabs_hdu(source, i+1, nullptr, &status);
+        cfits_error();
         ++numImg;
         manageParamArray();
         extractParam(source);
@@ -151,10 +178,11 @@ int fits_ui::extractFITS(std::string *sourcePath)
 {
     fitsfile* source;
     fits_open_file(&source, sourcePath->c_str(), READONLY, &status);
-
+    cfits_error();
     extractAll(source);
-
     fits_close_file(source, &status);
+    cfits_error();
+    std::cout << "FITS file extracted" << std::endl;
     return 0;
 }
 
@@ -187,5 +215,22 @@ int fits_ui::outputFitsImage(std::string *targetPath)
 
     delete [] output;
 
+    return 0;
+}
+
+int fits_ui::printData()
+{
+    for (int i{0}; i < numImg; ++i)
+    {
+        std::cout << "Image #" << i+1 << std::endl << std::endl;
+        for (int j{0}; j < param[i].imgSize; ++j)
+        {
+            if (j % 100000 == 0)
+                std::cout << data[i][j] << std::endl;
+        }
+        if (param[i].imgSize == 0)
+            std::cout << "No image data" << std::endl;
+        std::cout << std::endl;
+    }
     return 0;
 }

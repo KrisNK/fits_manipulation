@@ -3,10 +3,7 @@ CONFIG += console c++11
 CONFIG -= app_bundle
 CONFIG -= qt
 
-DEPENDPATH = dep/lib/
-INCLUDEPATH = dep/header/
-
-LIBS = -lcfitsio
+LIBS = -L/usr/local/lib/ -lcfitsio
 
 SOURCES += \
         src/fits_manipulation.cpp \

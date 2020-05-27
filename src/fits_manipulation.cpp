@@ -182,6 +182,7 @@ int fits_manipulation::printFitsData()
 
 int fits_manipulation::extractData(fitsfile *source)
 {
+    std::cout << "test" << std::endl;
     unsigned short* buff{ new unsigned short[imgSize]{}};
 
     fits_read_pix(source, TUSHORT, param.fpixel, imgSize, nullptr, buff, nullptr, &status);
@@ -195,6 +196,7 @@ int fits_manipulation::extractData(fitsfile *source)
     }
 
     delete[] buff;
+    std::cout << "FITS extracted" << std::endl;
     return 0;
 }
 
