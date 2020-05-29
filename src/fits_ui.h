@@ -4,15 +4,9 @@
 #include "fitsio.h"
 #include <string>
 
-// MAJOR BUG
-// When printing data, the majority is 0.
-// This is wrong, I must fix it.
-
 struct header_card
 {
-    char keyname[FLEN_KEYWORD];
-    char value[FLEN_VALUE];
-    char comment[FLEN_COMMENT];
+    char card[FLEN_CARD];
 };
 
 struct img_param
@@ -22,6 +16,7 @@ struct img_param
     long* naxes;
     long* fpixel;
     long imgSize;
+    int numKeys;
 };
 
 class fits_ui
@@ -32,6 +27,7 @@ private:
     int status{0};
     long** data;
     img_param* param;
+    header_card** headers;
 
     int getDatatype(int* datatype);
 
@@ -39,10 +35,12 @@ private:
 
     int extractData(fitsfile* source);
     int extractParam(fitsfile* source);
+    int extractHeader(fitsfile* source);
 
     int extractAll(fitsfile* source);
     int manageDataArray();
     int manageParamArray();
+    int manageHeaderArray();
 
 public:
     fits_ui();
