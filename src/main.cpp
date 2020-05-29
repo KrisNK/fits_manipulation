@@ -5,7 +5,7 @@ int main()
 {
     // Paths for test files
     // Files on my laptop
-    std::string path1 = "/home/kris/Desktop/test_o.fits";    // Multiple frames
+    std::string path1 = "/home/kris/Desktop/testfits/2483142o.fits";    // Multiple frames
     std::string path2 = "/home/kris/Desktop/testfits/2483142r.fits";    // Fits cube
     std::string path3 = "/home/kris/Projects/FITS/fits_manipulation/res/test.fit";            // Single fits image
     std::string path4 = "/home/kris/Projects/FITS/fits_manipulation/res/test2.fit";
@@ -23,13 +23,9 @@ int main()
     //fits_ui
     fits_ui test;
 
-    test.extractFITS(&test1);
-    test.extractFITS(&test2);
-    test.extractFITS(&test3);
-    test.extractFITS(&test4);
-    test.extractFITS(&test5);
+    test.extractFITS(&path2);
 
-    test.printData();
+    test.outputFrames(&target);
 
-    test.outputFitsImage(&target);
+    //test.outputFitsImage(&target);
 }

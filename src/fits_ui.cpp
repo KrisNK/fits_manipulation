@@ -32,9 +32,9 @@ fits_ui::~fits_ui()
 
 // Utility Functions
 
-int fits_ui::getDatatype(int *datatype)
+int fits_ui::getDatatype(int *datatype, int index)
 {
-    switch (param[numImg-1].bitpix)
+    switch (param[index].bitpix)
     {
     case (SHORT_IMG):
         *datatype = TSHORT;
@@ -182,7 +182,7 @@ int fits_ui::extractParam(fitsfile *source)
 int fits_ui::extractData(fitsfile *source)
 {
     int datatype{0};
-    getDatatype(&datatype);
+    getDatatype(&datatype, numImg-1);
     data[numImg-1] = new long [param[numImg-1].imgSize];
     fits_read_pix(source, datatype, param[numImg-1].fpixel, param[numImg-1].imgSize, nullptr, data[numImg-1], nullptr, &status);
     cfits_error();
@@ -241,16 +241,47 @@ int fits_ui::extractFITS(std::string *sourcePath)
 int fits_ui::outputImage(std::string* targetPath)
 {
 
+    return 0;
 }
 
 int fits_ui::outputFrames(std::string* targetPath)
 {
+    int datatype{0};
+    int index {numImg};
+    fitsfile* target;
 
+    std::remove(targetPath->c_str());
+    fits_create_file(&target, targetPath->c_str(), &status);
+    cfits_error();
+    fits_open_file(&target, targetPath->c_str(), READWRITE, &status);
+    cfits_error();
+
+    for (int i{0}; i < index; ++i)
+    {
+        std::cout << "Writing HDU #" << i+1 << std::endl;
+        fits_create_img(target, param[i].bitpix, param[i].naxis, param[i].naxes, &status);
+        cfits_error();
+
+        getDatatype(&datatype, i);
+        fits_write_pix(target, datatype, param[i].fpixel, param[i].imgSize, data[i], &status);
+        cfits_error();
+        for (int j{0}; j < param[i].numKeys; ++j)
+        {
+            fits_write_record(target, headers[i][j].card, &status);
+            cfits_error();
+        }
+    }
+
+    fits_close_file(target, &status);
+    cfits_error();
+
+    return 0;
 }
 
 int fits_ui::outputCube(std::string* targetPath)
 {
 
+    return 0;
 }
 
 // Testing

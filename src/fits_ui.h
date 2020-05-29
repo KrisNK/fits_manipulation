@@ -29,7 +29,7 @@ private:
     img_param* param;
     header_card** headers;
 
-    int getDatatype(int* datatype);
+    int getDatatype(int* datatype, int index);
 
     int cfits_error();
 
