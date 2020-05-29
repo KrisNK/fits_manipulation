@@ -46,11 +46,15 @@ public:
     fits_ui();
     ~fits_ui();
 
+    // Extraction
     int extractFITS(std::string* sourcePath);
-    int outputFitsImage(std::string* targetPath);
-    int outputFitsFrames(std::string* targetPath);
-    int outputFitsCube(std::string* targetPath);
 
+    // Output
+    int outputImage(std::string* targetPath);
+    int outputFrames(std::string* targetPath);
+    int outputCube(std::string* targetPath);
+
+    // Testing
     int printData();
 };
 

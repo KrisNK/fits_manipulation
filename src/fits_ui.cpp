@@ -225,6 +225,7 @@ int fits_ui::extractAll(fitsfile* source)
 
 // Public Functions
 
+// Extraction
 int fits_ui::extractFITS(std::string *sourcePath)
 {
     fitsfile* source;
@@ -236,48 +237,23 @@ int fits_ui::extractFITS(std::string *sourcePath)
     return 0;
 }
 
-int fits_ui::outputFitsImage(std::string *targetPath)
+// Output
+int fits_ui::outputImage(std::string* targetPath)
 {
-    int datatype{0};
-    getDatatype(&datatype);
 
-    std::remove(targetPath->c_str());
-    fitsfile* target;
-
-    fits_create_file(&target, targetPath->c_str(), &status);
-    cfits_error();
-    fits_open_file(&target, targetPath->c_str(), READWRITE, &status);
-    cfits_error();
-    fits_create_img(target, param[numImg-1].bitpix, param[numImg-1].naxis, param[numImg-1].naxes, &status);
-    cfits_error();
-
-    long* output = new long [param[numImg-1].imgSize];
-    for (int i{0}; i < numImg; ++i)
-    {
-        for (int j{0}; j < param[numImg-1].imgSize; ++j)
-        {
-            output[j] = data[i][j];
-        }
-    }
-
-    for (int i{0}; i < param[numImg-1].numKeys; ++i)
-    {
-        fits_write_record(target, headers[numImg-1][i].card, &status);
-        cfits_error();
-    }
-
-
-    fits_write_pix(target, datatype, param[numImg-1].fpixel, param[numImg-1].imgSize, output, &status);
-    cfits_error();
-
-    fits_close_file(target, &status);
-    cfits_error();
-
-    delete [] output;
-
-    return 0;
 }
 
+int fits_ui::outputFrames(std::string* targetPath)
+{
+
+}
+
+int fits_ui::outputCube(std::string* targetPath)
+{
+
+}
+
+// Testing
 int fits_ui::printData()
 {
     for (int i{0}; i < numImg; ++i)
