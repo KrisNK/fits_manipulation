@@ -50,9 +50,7 @@ public:
     int extractFITS(std::string* sourcePath);
 
     // Output
-    int outputImage(std::string* targetPath);
     int outputFrames(std::string* targetPath);
-    int outputCube(std::string* targetPath);
 
     // Testing
     int printData();

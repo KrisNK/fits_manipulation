@@ -219,7 +219,6 @@ int fits_ui::extractAll(fitsfile* source)
         manageDataArray();
         extractData(source);
     }
-
     return 0;
 }
 
@@ -238,12 +237,6 @@ int fits_ui::extractFITS(std::string *sourcePath)
 }
 
 // Output
-int fits_ui::outputImage(std::string* targetPath)
-{
-
-    return 0;
-}
-
 int fits_ui::outputFrames(std::string* targetPath)
 {
     int datatype{0};
@@ -258,7 +251,7 @@ int fits_ui::outputFrames(std::string* targetPath)
 
     for (int i{0}; i < index; ++i)
     {
-        std::cout << "Writing HDU #" << i+1 << std::endl;
+        //std::cout << "Writing HDU #" << i+1 << std::endl;
         fits_create_img(target, param[i].bitpix, param[i].naxis, param[i].naxes, &status);
         cfits_error();
 
@@ -274,12 +267,6 @@ int fits_ui::outputFrames(std::string* targetPath)
 
     fits_close_file(target, &status);
     cfits_error();
-
-    return 0;
-}
-
-int fits_ui::outputCube(std::string* targetPath)
-{
 
     return 0;
 }
