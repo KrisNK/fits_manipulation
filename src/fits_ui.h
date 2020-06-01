@@ -29,7 +29,7 @@ private:
     img_param* param;
     header_card** headers;
 
-    int getDatatype(int* datatype);
+    int getDatatype(int* datatype, int index);
 
     int cfits_error();
 
@@ -46,11 +46,13 @@ public:
     fits_ui();
     ~fits_ui();
 
+    // Extraction
     int extractFITS(std::string* sourcePath);
-    int outputFitsImage(std::string* targetPath);
-    int outputFitsFrames(std::string* targetPath);
-    int outputFitsCube(std::string* targetPath);
 
+    // Output
+    int outputFrames(std::string* targetPath);
+
+    // Testing
     int printData();
 };
 
